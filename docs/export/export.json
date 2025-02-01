@@ -1,0 +1,53 @@
+{
+    "rules": [],
+    "models": [
+        {
+            "classname": "Application",
+            "code": "class Application(Base):  # type: ignore\n    \"\"\"\n    description: This class represents the applications being managed in the CMDB.\n    \"\"\"\n    __tablename__ = 'application'\n    _s_collection_name = 'Application'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    description = Column(String)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    ApplicationServerList : Mapped[List[\"ApplicationServer\"]] = relationship(back_populates=\"application\")\n    IncidentList : Mapped[List[\"Incident\"]] = relationship(back_populates=\"application\")"
+        },
+        {
+            "classname": "ConfigurationItem",
+            "code": "class ConfigurationItem(Base):  # type: ignore\n    \"\"\"\n    description: General representation of configuration items not covered by specific entities above.\n    \"\"\"\n    __tablename__ = 'configuration_item'\n    _s_collection_name = 'ConfigurationItem'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    ci_type = Column(String)\n    operational_status = Column(String)\n    owner = Column(String)\n    created_at = Column(DateTime)\n    deleted_at = Column(DateTime)"
+        },
+        {
+            "classname": "DataCenter",
+            "code": "class DataCenter(Base):  # type: ignore\n    \"\"\"\n    description: Represents information about different data centers.\n    \"\"\"\n    __tablename__ = 'data_center'\n    _s_collection_name = 'DataCenter'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    location = Column(String)\n    capacity = Column(Integer)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)"
+        },
+        {
+            "classname": "NetworkDevice",
+            "code": "class NetworkDevice(Base):  # type: ignore\n    \"\"\"\n    description: Detailed information about network devices.\n    \"\"\"\n    __tablename__ = 'network_device'\n    _s_collection_name = 'NetworkDevice'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    type = Column(String)\n    model = Column(String)\n    ip_address = Column(String)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)"
+        },
+        {
+            "classname": "Server",
+            "code": "class Server(Base):  # type: ignore\n    \"\"\"\n    description: Describes the details of physical or virtual servers in the data center.\n    \"\"\"\n    __tablename__ = 'server'\n    _s_collection_name = 'Server'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    hostname = Column(String)\n    ip_address = Column(String)\n    os = Column(String)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    ApplicationServerList : Mapped[List[\"ApplicationServer\"]] = relationship(back_populates=\"server\")\n    BackupScheduleList : Mapped[List[\"BackupSchedule\"]] = relationship(back_populates=\"server\")\n    DatabaseList : Mapped[List[\"Database\"]] = relationship(back_populates=\"server\")\n    IncidentList : Mapped[List[\"Incident\"]] = relationship(back_populates=\"server\")\n    SoftwareLicenseList : Mapped[List[\"SoftwareLicense\"]] = relationship(back_populates=\"server\")"
+        },
+        {
+            "classname": "User",
+            "code": "class User(Base):  # type: ignore\n    \"\"\"\n    description: Represents users who have access to the CMDB.\n    \"\"\"\n    __tablename__ = 'user'\n    _s_collection_name = 'User'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    username = Column(String)\n    email = Column(String)\n    role = Column(String)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)"
+        },
+        {
+            "classname": "Vendor",
+            "code": "class Vendor(Base):  # type: ignore\n    \"\"\"\n    description: Stores vendor details related to various systems and assets.\n    \"\"\"\n    __tablename__ = 'vendor'\n    _s_collection_name = 'Vendor'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String)\n    contact_email = Column(String)\n    phone_number = Column(String)\n    updated_at = Column(DateTime)"
+        },
+        {
+            "classname": "ApplicationServer",
+            "code": "class ApplicationServer(Base):  # type: ignore\n    \"\"\"\n    description: A link table connecting applications to the servers they reside on.\n    \"\"\"\n    __tablename__ = 'application_server'\n    _s_collection_name = 'ApplicationServer'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    application_id = Column(ForeignKey('application.id'))\n    server_id = Column(ForeignKey('server.id'))\n    relation_type = Column(String)\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)\n\n    # parent relationships (access parent)\n    application : Mapped[\"Application\"] = relationship(back_populates=(\"ApplicationServerList\"))\n    server : Mapped[\"Server\"] = relationship(back_populates=(\"ApplicationServerList\"))"
+        },
+        {
+            "classname": "BackupSchedule",
+            "code": "class BackupSchedule(Base):  # type: ignore\n    \"\"\"\n    description: Describes backup schedules for servers.\n    \"\"\"\n    __tablename__ = 'backup_schedule'\n    _s_collection_name = 'BackupSchedule'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    server_id = Column(ForeignKey('server.id'))\n    schedule_time = Column(DateTime)\n    frequency = Column(String)\n    last_backup = Column(DateTime)\n\n    # parent relationships (access parent)\n    server : Mapped[\"Server\"] = relationship(back_populates=(\"BackupScheduleList\"))"
+        },
+        {
+            "classname": "Database",
+            "code": "class Database(Base):  # type: ignore\n    \"\"\"\n    description: Represents different databases in the system.\n    \"\"\"\n    __tablename__ = 'database'\n    _s_collection_name = 'Database'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    db_name = Column(String)\n    db_type = Column(String)\n    server_id = Column(ForeignKey('server.id'))\n    created_at = Column(DateTime)\n    updated_at = Column(DateTime)\n\n    # parent relationships (access parent)\n    server : Mapped[\"Server\"] = relationship(back_populates=(\"DatabaseList\"))"
+        },
+        {
+            "classname": "Incident",
+            "code": "class Incident(Base):  # type: ignore\n    \"\"\"\n    description: Records incidents related to servers or applications.\n    \"\"\"\n    __tablename__ = 'incident'\n    _s_collection_name = 'Incident'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    title = Column(String)\n    status = Column(String)\n    priority = Column(String)\n    creation_date = Column(DateTime)\n    closure_date = Column(DateTime)\n    server_id = Column(ForeignKey('server.id'))\n    application_id = Column(ForeignKey('application.id'))\n\n    # parent relationships (access parent)\n    application : Mapped[\"Application\"] = relationship(back_populates=(\"IncidentList\"))\n    server : Mapped[\"Server\"] = relationship(back_populates=(\"IncidentList\"))"
+        },
+        {
+            "classname": "SoftwareLicense",
+            "code": "class SoftwareLicense(Base):  # type: ignore\n    \"\"\"\n    description: Details of software licenses in use within the organization.\n    \"\"\"\n    __tablename__ = 'software_license'\n    _s_collection_name = 'SoftwareLicense'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    software_name = Column(String)\n    license_key = Column(String)\n    number_of_users = Column(Integer)\n    expiration_date = Column(DateTime)\n    purchase_date = Column(DateTime)\n    server_id = Column(ForeignKey('server.id'))\n\n    # parent relationships (access parent)\n    server : Mapped[\"Server\"] = relationship(back_populates=(\"SoftwareLicenseList\"))"
+        }
+    ]
+}

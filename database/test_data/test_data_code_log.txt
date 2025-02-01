@@ -1,0 +1,6 @@
+..  db_url: sqlite:////opt/projects/by-ulid/01JK02E5MT5311C6RY0AK39E66/database/test_data/db.sqlite
+..  cwd: /opt/projects/by-ulid/01JK02E5MT5311C6RY0AK39E66
+..  python_loc: /usr/local/bin/python
+..  test_data_loader version: 1.1
+..  LogicBank activated
+print(Pass: 1)
