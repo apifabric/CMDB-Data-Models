@@ -1,0 +1,326 @@
+about:
+  date: February 01, 2025 06:17:01
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 7
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  Application:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: description
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: This class represents the applications being managed in the CMDB.
+    info_list: This class represents the applications being managed in the CMDB.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - application_id
+      name: ApplicationServerList
+      resource: ApplicationServer
+    - direction: tomany
+      fks:
+      - application_id
+      name: IncidentList
+      resource: Incident
+    type: Application
+    user_key: name
+  ApplicationServer:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: application_id
+    - name: server_id
+    - name: relation_type
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    description: A link table connecting applications to the servers they reside on.
+    info_list: A link table connecting applications to the servers they reside on.
+    tab_groups:
+    - direction: toone
+      fks:
+      - application_id
+      name: application
+      resource: Application
+    - direction: toone
+      fks:
+      - server_id
+      name: server
+      resource: Server
+    type: ApplicationServer
+    user_key: id
+  BackupSchedule:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: server_id
+    - name: schedule_time
+      type: DATETIME
+    - name: frequency
+    - name: last_backup
+      type: DATETIME
+    description: Describes backup schedules for servers.
+    info_list: Describes backup schedules for servers.
+    tab_groups:
+    - direction: toone
+      fks:
+      - server_id
+      name: server
+      resource: Server
+    type: BackupSchedule
+    user_key: id
+  ConfigurationItem:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: ci_type
+    - name: operational_status
+    - name: owner
+    - name: created_at
+      type: DATETIME
+    - name: deleted_at
+      type: DATETIME
+    - name: id
+    description: General representation of configuration items not covered by specific
+      entities above.
+    info_list: General representation of configuration items not covered by specific
+      entities above.
+    type: ConfigurationItem
+    user_key: name
+  DataCenter:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: location
+    - name: capacity
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: Represents information about different data centers.
+    info_list: Represents information about different data centers.
+    type: DataCenter
+    user_key: name
+  Database:
+    attributes:
+    - label: ' db_name*'
+      name: db_name
+      search: true
+      sort: true
+    - name: server_id
+    - name: db_type
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: Represents different databases in the system.
+    info_list: Represents different databases in the system.
+    tab_groups:
+    - direction: toone
+      fks:
+      - server_id
+      name: server
+      resource: Server
+    type: Database
+    user_key: db_name
+  Incident:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: application_id
+    - name: server_id
+    - name: title
+    - name: status
+    - name: priority
+    - name: creation_date
+      type: DATETIME
+    - name: closure_date
+      type: DATETIME
+    description: Records incidents related to servers or applications.
+    info_list: Records incidents related to servers or applications.
+    tab_groups:
+    - direction: toone
+      fks:
+      - application_id
+      name: application
+      resource: Application
+    - direction: toone
+      fks:
+      - server_id
+      name: server
+      resource: Server
+    type: Incident
+    user_key: id
+  NetworkDevice:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: Type
+    - name: model
+    - name: ip_address
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    description: Detailed information about network devices.
+    info_list: Detailed information about network devices.
+    type: NetworkDevice
+    user_key: id
+  Server:
+    attributes:
+    - label: ' hostname*'
+      name: hostname
+      search: true
+      sort: true
+    - name: ip_address
+    - name: os
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: Describes the details of physical or virtual servers in the data
+      center.
+    info_list: Describes the details of physical or virtual servers in the data center.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - server_id
+      name: ApplicationServerList
+      resource: ApplicationServer
+    - direction: tomany
+      fks:
+      - server_id
+      name: BackupScheduleList
+      resource: BackupSchedule
+    - direction: tomany
+      fks:
+      - server_id
+      name: DatabaseList
+      resource: Database
+    - direction: tomany
+      fks:
+      - server_id
+      name: IncidentList
+      resource: Incident
+    - direction: tomany
+      fks:
+      - server_id
+      name: SoftwareLicenseList
+      resource: SoftwareLicense
+    type: Server
+    user_key: hostname
+  SoftwareLicense:
+    attributes:
+    - label: ' software_name*'
+      name: software_name
+      search: true
+      sort: true
+    - name: server_id
+    - name: license_key
+    - name: number_of_users
+    - name: expiration_date
+      type: DATETIME
+    - name: purchase_date
+      type: DATETIME
+    - name: id
+    description: Details of software licenses in use within the organization.
+    info_list: Details of software licenses in use within the organization.
+    tab_groups:
+    - direction: toone
+      fks:
+      - server_id
+      name: server
+      resource: Server
+    type: SoftwareLicense
+    user_key: software_name
+  User:
+    attributes:
+    - label: ' username*'
+      name: username
+      search: true
+      sort: true
+    - name: email
+    - name: role
+    - name: created_at
+      type: DATETIME
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: Represents users who have access to the CMDB.
+    info_list: Represents users who have access to the CMDB.
+    type: User
+    user_key: username
+  Vendor:
+    attributes:
+    - label: ' name*'
+      name: name
+      search: true
+      sort: true
+    - name: contact_email
+    - name: phone_number
+    - name: updated_at
+      type: DATETIME
+    - name: id
+    description: Stores vendor details related to various systems and assets.
+    info_list: Stores vendor details related to various systems and assets.
+    type: Vendor
+    user_key: name
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'

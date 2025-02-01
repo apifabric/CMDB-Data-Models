@@ -1,0 +1,140 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Project DBML {
+  Note: '''
+Application: This class represents the applications being managed in the CMDB.
+ApplicationServer: A link table connecting applications to the servers they reside on.
+Server: Describes the details of physical or virtual servers in the data center.
+BackupSchedule: Describes backup schedules for servers.
+ConfigurationItem: General representation of configuration items not covered by specific entities above.
+DataCenter: Represents information about different data centers.
+Database: Represents different databases in the system.
+Incident: Records incidents related to servers or applications.
+NetworkDevice: Detailed information about network devices.
+SoftwareLicense: Details of software licenses in use within the organization.
+User: Represents users who have access to the CMDB.
+Vendor: Stores vendor details related to various systems and assets.
+'''
+}
+
+Table Application {
+    id INTEGER [primary key]
+    name VARCHAR 
+    description VARCHAR 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table ApplicationServer {
+    id INTEGER [primary key]
+    application_id INTEGER 
+    server_id INTEGER 
+    relation_type VARCHAR 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table Server {
+    id INTEGER [primary key]
+    hostname VARCHAR 
+    ip_address VARCHAR 
+    os VARCHAR 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table BackupSchedule {
+    id INTEGER [primary key]
+    server_id INTEGER 
+    schedule_time DATETIME 
+    frequency VARCHAR 
+    last_backup DATETIME 
+    }
+
+Table ConfigurationItem {
+    id INTEGER [primary key]
+    name VARCHAR 
+    ci_type VARCHAR 
+    operational_status VARCHAR 
+    owner VARCHAR 
+    created_at DATETIME 
+    deleted_at DATETIME 
+    }
+
+Table DataCenter {
+    id INTEGER [primary key]
+    name VARCHAR 
+    location VARCHAR 
+    capacity INTEGER 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table Database {
+    id INTEGER [primary key]
+    db_name VARCHAR 
+    db_type VARCHAR 
+    server_id INTEGER 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table Incident {
+    id INTEGER [primary key]
+    title VARCHAR 
+    status VARCHAR 
+    priority VARCHAR 
+    creation_date DATETIME 
+    closure_date DATETIME 
+    server_id INTEGER 
+    application_id INTEGER 
+    }
+
+Table NetworkDevice {
+    id INTEGER [primary key]
+    Type VARCHAR 
+    model VARCHAR 
+    ip_address VARCHAR 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table SoftwareLicense {
+    id INTEGER [primary key]
+    software_name VARCHAR 
+    license_key VARCHAR 
+    number_of_users INTEGER 
+    expiration_date DATETIME 
+    purchase_date DATETIME 
+    server_id INTEGER 
+    }
+
+Table User {
+    id INTEGER [primary key]
+    username VARCHAR 
+    email VARCHAR 
+    role VARCHAR 
+    created_at DATETIME 
+    updated_at DATETIME 
+    }
+
+Table Vendor {
+    id INTEGER [primary key]
+    name VARCHAR 
+    contact_email VARCHAR 
+    phone_number VARCHAR 
+    updated_at DATETIME 
+    }
+
+
+
+// Relationships
+    Ref: ApplicationServer.(application_id) < Application.(id)
+    Ref: ApplicationServer.(server_id) < Server.(id)
+    Ref: BackupSchedule.(server_id) < Server.(id)
+    Ref: Database.(server_id) < Server.(id)
+    Ref: Incident.(application_id) < Application.(id)
+    Ref: Incident.(server_id) < Server.(id)
+    Ref: SoftwareLicense.(server_id) < Server.(id)

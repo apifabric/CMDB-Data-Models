@@ -1,0 +1,286 @@
+"models":
+- "classname": |-
+    Application
+  "code": |-
+    class Application(Base):
+        __tablename__ = 'application'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String)
+        description = Column(String)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    This class represents the applications being managed in the CMDB.
+  "name": |-
+    Application
+- "classname": |-
+    Server
+  "code": |-
+    class Server(Base):
+        __tablename__ = 'server'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        hostname = Column(String)
+        ip_address = Column(String)
+        os = Column(String)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    Describes the details of physical or virtual servers in the data center.
+  "name": |-
+    Server
+- "classname": |-
+    Database
+  "code": |-
+    class Database(Base):
+        __tablename__ = 'database'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        db_name = Column(String)
+        db_type = Column(String)
+        server_id = Column(Integer, ForeignKey('server.id'))
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    Represents different databases in the system.
+  "name": |-
+    Database
+- "classname": |-
+    NetworkDevice
+  "code": |-
+    class NetworkDevice(Base):
+        __tablename__ = 'network_device'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        type = Column(String)
+        model = Column(String)
+        ip_address = Column(String)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    Detailed information about network devices.
+  "name": |-
+    NetworkDevice
+- "classname": |-
+    User
+  "code": |-
+    class User(Base):
+        __tablename__ = 'user'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        username = Column(String)
+        email = Column(String)
+        role = Column(String)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    Represents users who have access to the CMDB.
+  "name": |-
+    User
+- "classname": |-
+    ApplicationServer
+  "code": |-
+    class ApplicationServer(Base):
+        __tablename__ = 'application_server'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        application_id = Column(Integer, ForeignKey('application.id'))
+        server_id = Column(Integer, ForeignKey('server.id'))
+        relation_type = Column(String)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    A link table connecting applications to the servers they reside on.
+  "name": |-
+    ApplicationServer
+- "classname": |-
+    Incident
+  "code": |-
+    class Incident(Base):
+        __tablename__ = 'incident'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        title = Column(String)
+        status = Column(String)
+        priority = Column(String)
+        creation_date = Column(DateTime)
+        closure_date = Column(DateTime)
+        server_id = Column(Integer, ForeignKey('server.id'))
+        application_id = Column(Integer, ForeignKey('application.id'))
+  "description": |-
+    Records incidents related to servers or applications.
+  "name": |-
+    Incident
+- "classname": |-
+    SoftwareLicense
+  "code": |-
+    class SoftwareLicense(Base):
+        __tablename__ = 'software_license'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        software_name = Column(String)
+        license_key = Column(String)
+        number_of_users = Column(Integer)
+        expiration_date = Column(DateTime)
+        purchase_date = Column(DateTime)
+        server_id = Column(Integer, ForeignKey('server.id'))
+  "description": |-
+    Details of software licenses in use within the organization.
+  "name": |-
+    SoftwareLicense
+- "classname": |-
+    DataCenter
+  "code": |-
+    class DataCenter(Base):
+        __tablename__ = 'data_center'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String)
+        location = Column(String)
+        capacity = Column(Integer)
+        created_at = Column(DateTime)
+        updated_at = Column(DateTime)
+  "description": |-
+    Represents information about different data centers.
+  "name": |-
+    DataCenter
+- "classname": |-
+    BackupSchedule
+  "code": |-
+    class BackupSchedule(Base):
+        __tablename__ = 'backup_schedule'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        server_id = Column(Integer, ForeignKey('server.id'))
+        schedule_time = Column(DateTime)
+        frequency = Column(String)
+        last_backup = Column(DateTime)
+  "description": |-
+    Describes backup schedules for servers.
+  "name": |-
+    BackupSchedule
+- "classname": |-
+    ConfigurationItem
+  "code": |-
+    class ConfigurationItem(Base):
+        __tablename__ = 'configuration_item'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String)
+        ci_type = Column(String)
+        operational_status = Column(String)
+        owner = Column(String)
+        created_at = Column(DateTime)
+        deleted_at = Column(DateTime)
+  "description": |-
+    General representation of configuration items not covered by specific entities above.
+  "name": |-
+    ConfigurationItem
+- "classname": |-
+    Vendor
+  "code": |-
+    class Vendor(Base):
+        __tablename__ = 'vendor'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String)
+        contact_email = Column(String)
+        phone_number = Column(String)
+        updated_at = Column(DateTime)
+  "description": |-
+    Stores vendor details related to various systems and assets.
+  "name": |-
+    Vendor
+"name": |-
+  CMDB Data Models
+"rules": []
+"test_data": |-
+  Test data for each of the 12 tables, generating different properties.
+"test_data_rows":
+- "code": |-
+    app1 = Application(name="Inventory Management", description="Handles stock and supply chain activities.", created_at=date(2021, 1, 1), updated_at=date(2021, 6, 1))
+  "test_data_row_variable": |-
+    app1
+- "code": |-
+    app2 = Application(name="HR Portal", description="Manages employee records and payments.", created_at=date(2020, 3, 15), updated_at=date(2021, 9, 30))
+  "test_data_row_variable": |-
+    app2
+- "code": |-
+    server1 = Server(hostname="server1", ip_address="192.168.1.10", os="Linux", created_at=date(2021, 1, 20), updated_at=date(2021, 10, 20))
+  "test_data_row_variable": |-
+    server1
+- "code": |-
+    server2 = Server(hostname="server2", ip_address="192.168.1.12", os="Windows Server 2016", created_at=date(2020, 2, 18), updated_at=date(2021, 7, 22))
+  "test_data_row_variable": |-
+    server2
+- "code": |-
+    db1 = Database(db_name="app_db1", db_type="PostgreSQL", server_id=1, created_at=date(2021, 2, 1), updated_at=date(2021, 11, 1))
+  "test_data_row_variable": |-
+    db1
+- "code": |-
+    db2 = Database(db_name="hr_db", db_type="Oracle", server_id=2, created_at=date(2020, 5, 10), updated_at=date(2021, 10, 10))
+  "test_data_row_variable": |-
+    db2
+- "code": |-
+    network_device1 = NetworkDevice(type="Router", model="Cisco2900", ip_address="10.0.0.1", created_at=date(2019, 5, 4), updated_at=date(2021, 6, 30))
+  "test_data_row_variable": |-
+    network_device1
+- "code": |-
+    network_device2 = NetworkDevice(type="Switch", model="Netgear24Port", ip_address="10.0.0.45", created_at=date(2021, 7, 15), updated_at=date(2021, 11, 10))
+  "test_data_row_variable": |-
+    network_device2
+- "code": |-
+    user1 = User(username="john.doe", email="john.doe@example.com", role="Administrator", created_at=date(2021, 1, 1), updated_at=date(2021, 6, 1))
+  "test_data_row_variable": |-
+    user1
+- "code": |-
+    user2 = User(username="jane.smith", email="jane.smith@example.com", role="User", created_at=date(2020, 3, 15), updated_at=date(2021, 9, 30))
+  "test_data_row_variable": |-
+    user2
+- "code": |-
+    application_server1 = ApplicationServer(application_id=1, server_id=1, relation_type="Primary Host", created_at=date(2021, 3, 15), updated_at=date(2021, 7, 15))
+  "test_data_row_variable": |-
+    application_server1
+- "code": |-
+    incident1 = Incident(title="Server Overload", status="Open", priority="High", creation_date=date(2021, 5, 21), closure_date=None, server_id=1, application_id=1)
+  "test_data_row_variable": |-
+    incident1
+- "code": |-
+    software_license1 = SoftwareLicense(software_name="MS Office", license_key="XXXXXXXXXX", number_of_users=50, expiration_date=date(2022, 8, 20), purchase_date=date(2020, 8, 20), server_id=2)
+  "test_data_row_variable": |-
+    software_license1
+- "code": |-
+    data_center1 = DataCenter(name="London DC", location="London", capacity=500, created_at=date(2021, 3, 10), updated_at=date(2021, 11, 2))
+  "test_data_row_variable": |-
+    data_center1
+- "code": |-
+    backup_schedule1 = BackupSchedule(server_id=1, schedule_time=date(2021, 3, 15), frequency="Weekly", last_backup=date(2021, 11, 1))
+  "test_data_row_variable": |-
+    backup_schedule1
+- "code": |-
+    configuration_item1 = ConfigurationItem(name="Firewall", ci_type="Security", operational_status="Operational", owner="Security Team", created_at=date(2021, 9, 1), deleted_at=None)
+  "test_data_row_variable": |-
+    configuration_item1
+- "code": |-
+    vendor1 = Vendor(name="Amazon AWS", contact_email="aws_support@amazon.com", phone_number="+18005551234", updated_at=date(2021, 8, 5))
+  "test_data_row_variable": |-
+    vendor1
+"test_data_sqlite": |-
+  INSERT INTO application (name, description, created_at, updated_at) VALUES ('Inventory Management', 'Handles stock and supply chain activities.', '2021-01-01', '2021-06-01');
+  INSERT INTO application (name, description, created_at, updated_at) VALUES ('HR Portal', 'Manages employee records and payments.', '2020-03-15', '2021-09-30');
+  INSERT INTO server (hostname, ip_address, os, created_at, updated_at) VALUES ('server1', '192.168.1.10', 'Linux', '2021-01-20', '2021-10-20');
+  INSERT INTO server (hostname, ip_address, os, created_at, updated_at) VALUES ('server2', '192.168.1.12', 'Windows Server 2016', '2020-02-18', '2021-07-22');
+  INSERT INTO database (db_name, db_type, server_id, created_at, updated_at) VALUES ('app_db1', 'PostgreSQL', 1, '2021-02-01', '2021-11-01');
+  INSERT INTO database (db_name, db_type, server_id, created_at, updated_at) VALUES ('hr_db', 'Oracle', 2, '2020-05-10', '2021-10-10');
+  INSERT INTO network_device (type, model, ip_address, created_at, updated_at) VALUES ('Router', 'Cisco2900', '10.0.0.1', '2019-05-04', '2021-06-30');
+  INSERT INTO network_device (type, model, ip_address, created_at, updated_at) VALUES ('Switch', 'Netgear24Port', '10.0.0.45', '2021-07-15', '2021-11-10');
+  INSERT INTO user (username, email, role, created_at, updated_at) VALUES ('john.doe', 'john.doe@example.com', 'Administrator', '2021-01-01', '2021-06-01');
+  INSERT INTO user (username, email, role, created_at, updated_at) VALUES ('jane.smith', 'jane.smith@example.com', 'User', '2020-03-15', '2021-09-30');
+  INSERT INTO application_server (application_id, server_id, relation_type, created_at, updated_at) VALUES (1, 1, 'Primary Host', '2021-03-15', '2021-07-15');
+  INSERT INTO incident (title, status, priority, creation_date, closure_date, server_id, application_id) VALUES ('Server Overload', 'Open', 'High', '2021-05-21', NULL, 1, 1);
+  INSERT INTO software_license (software_name, license_key, number_of_users, expiration_date, purchase_date, server_id) VALUES ('MS Office', 'XXXXXXXXXX', 50, '2022-08-20', '2020-08-20', 2);
+  INSERT INTO data_center (name, location, capacity, created_at, updated_at) VALUES ('London DC', 'London', 500, '2021-03-10', '2021-11-02');
+  INSERT INTO backup_schedule (server_id, schedule_time, frequency, last_backup) VALUES (1, '2021-03-15', 'Weekly', '2021-11-01');
+  INSERT INTO configuration_item (name, ci_type, operational_status, owner, created_at, deleted_at) VALUES ('Firewall', 'Security', 'Operational', 'Security Team', '2021-09-01', NULL);
+  INSERT INTO vendor (name, contact_email, phone_number, updated_at) VALUES ('Amazon AWS', 'aws_support@amazon.com', '+18005551234', '2021-08-05');
